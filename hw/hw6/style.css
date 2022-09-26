@@ -1,0 +1,92 @@
+#form {
+	color: blue;
+	border: 3px grey solid;
+	width: 600px;
+	margin: 0 auto;
+	width: 600px;
+	margin: 0 auto;
+}
+
+
+div.middle {
+	margin: 15px 0;
+	display: inline-block;
+}
+
+#left {
+	width: 30%;
+}
+
+#right {
+	float: right;
+	width: 50%;
+}
+select {
+	width: 100%;
+}
+
+#form input, select {
+	margin-top: 7px;
+}
+
+input, select {
+	padding: 5px 7px;
+}
+
+#form span {
+	color: red;
+}
+
+h1 {
+	margin-top: 0;
+}
+
+#header {
+	padding: 30px 0 10px 45px;
+	background-image: url("./banner.jpeg");
+	background-size: 600px 400px;
+	background-repeat: no-repeat;
+	background-position: bottom;;
+	color: white;
+}
+
+#body {
+	padding: 30px 45px 30px 45px;
+}
+
+#body input {
+	width: 100%;
+}
+
+#body #distance {
+	width: 100%;
+}
+
+
+h3 { 
+	display: inline-block;
+}
+#autodetect {
+	display: block;
+}
+
+#autodetect input {
+	width: auto;
+}
+
+
+.button {
+	background-color: blue; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin-right: 5px;
+}
+
+.yellow {
+	background-color: yellow;
+}

@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<script>
+			document.addEventListener("click", function(){
+			    window.location.reload();
+			})
+		</script>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="form">
+			<div id="header">
+				<h1>Business Search</h1>
+				<h2>Fill out the form to get businesses near you!</h2>
+			</div>
+			<div id="body">
+				<form>
+					<label for="keyword">Keyword<span>*</span></label><br>
+					<input type="text" id="keyword" name="keyword" /><br>
+					<div class="middle" id="left">
+						<label for="distance">Distance(miles)</label><br>
+						<input type="text" id="distance"/>
+					</div>
+					<div class="middle" id="right">
+						<label for="industry">Category<span>*</span></label><br>
+						<select name="industry" id="select">
+							<option value="default">Default</option>
+							<option value="art">Arts & Entertainment</option>
+							<option value="health">Health & Medical</option>
+							<option value="travel">Food</option>
+							<option value="food">Professional Services</option>
+							<option value="proserv">option1</option>
+						</select>
+					</div>
+					<br>
+					<label for="location">Location<span>*</span></label><br>
+					<input type="text" name="location" id="location" />
+				</form>
+				<hr>
+				<div id="autodetect">
+					<h3>Want us to auto-detect your location? Check here</h3><input type="checkbox" />
+				</div>
+				<button class="button">SUBMIT</button><button class="button yellow">CLEAR</button>
+			</div>
+		</div>
+	</body>
+</html>
