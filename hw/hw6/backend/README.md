@@ -3,11 +3,29 @@ Create and activate a virtual environment.
 Make sure dependencies are installed via `pip` and `requirements.txt`.
 Then run the service locally:
 ```
-python3 -m gunicorn -b :8000 main:app
+functions-framework --target search --debug
 ```
 # Deployment
 Make sure GCP SDK for Python is installed, configured, and authenticated.
-Deploy the project with:
+1. Deploy the search API:
 ```
-gcp deploy app
+gcloud functions deploy python-http-function \
+--gen2 \
+--runtime=python310 \
+--region=us-west2 \
+--source=. \
+--entry-point=search \
+--trigger-http \
+--allow-unauthenticated
+```
+2. Deploy the details API:
+```
+gcloud functions deploy python-http-function \
+--gen2 \
+--runtime=python310 \
+--region=us-west2 \
+--source=. \
+--entry-point=details \
+--trigger-http \
+--allow-unauthenticated
 ```
