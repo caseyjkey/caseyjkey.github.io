@@ -194,6 +194,7 @@ const getShops = async () => {
     if (missingInputs()) return null;
 
     const args = await getArgs();
+    console.log(SEARCH_API_URI + '/search?' + new URLSearchParams(args));
     const response = await fetch(SEARCH_API_URI + '/search?' + new URLSearchParams(args), {mode: 'cors'});
     const shops = (await response.json()).businesses;
     return shops;
@@ -226,9 +227,6 @@ const getArgs = async () => {
     let form = document.querySelector('form');
 
     form = getData(form);
-
-    if (form.category === "default")
-        form.category = "all";
 
     let milesAsMeters = form.radius * 1609.34;
     milesAsMeters = milesAsMeters > 40000 ? 40000 : milesAsMeters;

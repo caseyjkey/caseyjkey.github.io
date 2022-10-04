@@ -1,9 +1,16 @@
 # Development
 Create and activate a virtual environment.
-Make sure dependencies are installed via `pip` and `requirements.txt`.
-Then run the service locally:
+1. Make sure dependencies are installed via `pip` and `requirements.txt`.
+2. Then run the service locally:
 ```
 functions-framework --target search --debug
+```
+```
+functions-framework --target details --debug
+```
+3. Run a web server for the web page.
+```
+python3 -m http.server 8000
 ```
 # Deployment
 Make sure GCP SDK for Python is installed, configured, and authenticated.
