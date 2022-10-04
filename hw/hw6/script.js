@@ -108,15 +108,18 @@ const sortTable = (event) => {
 const openCard = async (id) => {
     const response = await fetch(DETAILS_API_URI + '/details?' + new URLSearchParams({id: id}), {mode: 'cors'});
     const details = await response.json();
+    console.log(details)
 
-    let bodyDetails = ['is_closed', 'categories', 'location', 'display_phone', 'transactions', 'price', 'url', 'photos'];
+    let bodyDetails = ['hours', 'categories', 'location', 'display_phone', 'transactions', 'price', 'url', 'photos'];
     bodyDetails = Object.fromEntries(bodyDetails
         .filter(key => key in details && (Object.keys(details[key]).length || typeof details[key] == "boolean"))
         .map(key => [key, details[key]])
     );
-    bodyDetails.is_closed = bodyDetails.is_closed ? 'Closed' : 'Open Now';
+
     bodyDetails.location = bodyDetails.location.display_address.join(', ');
     bodyDetails.categories = bodyDetails.categories.map((obj) => obj.title).join(' | ');
+    if (bodyDetails.hours)
+        bodyDetails.hours = bodyDetails.hours[0].is_open_now ? 'Open Now' : 'Closed';
     if (bodyDetails.transactions)
         bodyDetails.transactions = bodyDetails.transactions.map((str) => str.charAt(0).toUpperCase() + str.slice(1)).join(', ');
     
@@ -128,7 +131,7 @@ const openCard = async (id) => {
         return Object.assign({}, ...keyValues);
     }
     let newKeys = {
-            'is_closed': 'Status', 'categories': 'Category', 'display_phone': 'Phone Number',
+            'hours': 'Status', 'categories': 'Category', 'display_phone': 'Phone Number',
             'location': 'Address', 'display_phone': 'Phone Number',
             'transactions': 'Transactions Supported', 'price': 'Price'
         };
@@ -200,13 +203,11 @@ const missingInputs = () => {
     let requiredInputs = ["term", "radius", "location"],
         autodetect = document.querySelector('input[type="checkbox"]').checked;
     if (autodetect) {
-        const index = requiredInputs.indexOf('location');
-        if (index > -1)
-            requiredInputs.splice(index, 1);
+        requiredInputs = [];
     }
 
     let missingInput, hasValue = false,
-        tooltip = null;
+        tooltips = null;
     for (const [i, input] of requiredInputs.entries()) {
         tooltips = document.querySelectorAll('span.tooltip');
         hasValue = !!document.getElementById(input).value;
