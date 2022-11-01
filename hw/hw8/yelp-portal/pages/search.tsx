@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import Geocode from "react-geocode"
 import Navbar from '../components/Navbar'
 import YelpSearch from '../components/YelpSearch'
+import BusinessCard from '../components/BusinessCard'
 import styles from '../styles/Search.module.css'
 
 Geocode.setApiKey("AIzaSyAJbN4SHchsN1orl43lWy5fGb0AXMks-Qs");
@@ -65,7 +66,7 @@ export default function Search() {
         for (let idx in shops) {
             const { id, image_url, name, rating, distance } = shops[idx];
             const tr = tb.insertRow();
-            tr.addEventListener('click', async () => await openCard(id));
+            tr.addEventListener('click', () => setCard(id));
             let td = tr.insertCell();
             td.appendChild(document.createTextNode(`${parseInt(idx) + 1}`));
             td = tr.insertCell();
@@ -245,7 +246,7 @@ export default function Search() {
     };
 
     return (
-        <div className="ps-3 pe-3">
+        <div className="ps-3 pe-3 pb-5">
             <Navbar page="search" />
             <div className="ms-auto me-auto d-flex flex-column col-sm-8 col-md-6 align-items-center ms-3 me-3 mt-5" id={styles.form}>
                 <div className="mt-4" id={styles.header}>
@@ -315,7 +316,7 @@ export default function Search() {
                 <table id={styles.table}>
                 </table>
             </div>
-
+            <BusinessCard id={card} />
         </div>
     )
 }
