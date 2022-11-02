@@ -1,3 +1,5 @@
 .DS_Store
 hw/hw6/backend/service_account.json
 venv/
+*/venv/
+*/.env.local

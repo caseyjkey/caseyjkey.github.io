@@ -1,0 +1,29 @@
+
+
+.review:last-child {
+    border-radius: 0 0 15px 15px;
+}
+.review {
+    padding: 0.25em 0.5em;
+}
+.review:nth-child(odd) {
+    background-color: #efefef;
+}
+
+#reviews > .review + .review {
+    border-top: 1px solid #e1e1e1;
+    //border-bottom: 1px solid gray;
+}
+
+.name {
+    padding-top: 0.5em;
+    font-weight: bold;
+}
+
+.text {
+    margin: 1em 0;
+}
+
+.time {
+    padding-bottom: 1em;
+}

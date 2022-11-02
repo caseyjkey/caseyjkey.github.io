@@ -104,7 +104,7 @@
 
 
 #card {
-	visibility: hidden;
+	//visibility: hidden;
 	background-color: white;
 	margin: 0 auto;
 	margin-top: 50px;
@@ -131,19 +131,53 @@
 }
 
 #cardTitle {
-	margin: 0 auto 1em auto;
+	margin: 1em auto 1em auto;
 	font-weight: bold;
 }
 
 #card svg {
-	margin-left: 0.5em;
+	margin-left: 1em;
+	position: absolute;
+}
+
+#card #socials svg {
+	position: relative;
+}
+
+#card #socials {
+	flex-basis: 100%;
+}
+
+#card #reserve {
+	flex-basis: 100%;
+	margin: 1em 0;
+}
+
+#modal {
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	top: 15%;
+	left: 0;
+	right: 0;
+	background-color: white;
+}
+
+#modal h2 {
+	margin: 0.5em 0 0 0.5em;
+}
+
+#modal h3 {
+	font-size: 1.2em;
+	margin: 1em 0 0.5em 0;
+	text-align: center;
 }
 
 #card p {
 }
 
 #card a {
-	display: block;
+	//display: block;
 }
 
 .open {
@@ -181,7 +215,13 @@
 	margin: 30px 5px 15px 5px;
 	flex-basis: 100%;
 	display: flex;
+	justify-content: center;
 }
+
+#card #photos div {
+	flex-basis: 100%
+}
+
 #photos p {
 	position: absolute;
 	width: 100%;
@@ -191,14 +231,12 @@
 	margin-top: 20px;
 }
 
-#photos .photo + .photo {
-	margin-left: 7px;
-}
 
 #card .photo {
-	border: 2px #ebebeb solid;
-	flex-basis: 33.33333%;
 	height: 450px;
+	object-fit: cover;
+	width: 50%;
+	margin: 0 auto;
 	position: relative;
 }
 
@@ -208,6 +246,15 @@
 	object-fit: cover;
 	object-position: top;
 	margin-bottom: 50px;
+}
+
+#map > div {
+	padding: 1.75em 0;;
+}
+
+#reviews > div {
+	padding: 0;
+    min-height: 350px;
 }
 
 

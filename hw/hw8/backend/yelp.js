@@ -11,7 +11,7 @@ const apiKey = process.env.YELP;
 app.get('/autocomplete', (req, res) => {
     const { text } = req.query;
     console.log(text);
-    const config = {
+    let config = {
         method: 'get',
         url: `https://api.yelp.com/v3/autocomplete?text=${text}`,
         headers: {
@@ -21,9 +21,6 @@ app.get('/autocomplete', (req, res) => {
 
     axios(config)
         .then(function (response) {
-            // res.send(JSON.stringify(response.data, null, 2));
-            // res.send(term)
-            console.log(response.data)
             return JSON.stringify(response.data, null, 2)
         }) 
         .then(function (jsonResponse) {
@@ -33,4 +30,30 @@ app.get('/autocomplete', (req, res) => {
             console.log(error);
         });
 });
+
+app.get('/reviews', (req, res) => {
+    console.log(req.query)
+    const { id } = req.query;
+    console.log(id);
+    let config = {
+        method: 'get',
+        url: `https://api.yelp.com/v3/businesses/${id}/reviews`,
+        headers: {
+            'Authorization': `Bearer ${apiKey}`
+        }
+    };
+
+    axios(config)
+        .then(function (response) {
+            console.log(response.data)
+            return JSON.stringify(response.data, null, 2)
+        }) 
+        .then(function (jsonResponse) {
+            res.send(jsonResponse)
+        }) 
+        .catch(function (error) {
+            console.log(id, error);
+        });
+});
+
 app.listen(port, () => console.log(`Hello from ${port}`));

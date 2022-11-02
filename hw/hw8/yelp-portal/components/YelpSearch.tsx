@@ -59,6 +59,7 @@ export default function YelpSearch() {
                 request: { text: string },
                 callback: (results?: readonly string[]) => void,
             ) => {
+                console.log(AUTOCOMPLETE_API_URI + '?' + new URLSearchParams(request));
                 const response = await fetch(AUTOCOMPLETE_API_URI + '?' + new URLSearchParams(request), {mode: 'cors'});
                 const details = await response.json();
                 let results: string[] = details.categories.map((category) => category.title);
