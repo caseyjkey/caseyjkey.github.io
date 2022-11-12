@@ -3,11 +3,22 @@
 	background-color: white;
 	border: 1px #e1e1e1 solid;
 	font-weight: normal;
-	//width: 601px;
 	margin: 0 auto;
-	//width: 600px;
 	margin: 0 auto;
 	border-radius: 15px;
+}
+
+#search {
+	width: 100%;
+	border-radius: 5px;
+}
+
+.option {
+	font-size: 1.2em;
+}
+
+#form #loading {
+	color: black;
 }
 
 #form #autoDetect {
@@ -18,6 +29,7 @@
 #form #autoDetect span {
 	vertical-align: middle;
 	color: black;
+	font-size: 1.2em;
 }
 
 #form #autoDetect label {
@@ -26,20 +38,18 @@
 }
 
 #form input[type="checkbox"] {
-	width: 1em;
 	margin-top: 0;
 	vertical-align: middle;
-	margin-right: 0.5em;
+	margin-right: 0.25em;
 }
 
 #table {
-	display: none;
 	text-align: center;
 	background-color: #f0f0f0;
 	margin: 0 auto;
 	margin-top: 3em;
 	border-spacing: 0;
-	border-radius: 10px 10px 0 0;
+	border-radius: 10px 10px 10px 10px;
 }
 
 #results #noRecords {
@@ -78,7 +88,6 @@
 }
 
 #table tbody td {
-	//border: 1px #ebebeb solid;
 	height: 110px;
 	vertical-align: top;
 	padding-top: 0.5em;
@@ -102,9 +111,15 @@
 #table td:nth-child(4) { width: 160px; }
 #table td:nth-child(5) { width: 160px; }
 
+#table tbody tr:last-child td:first-child {
+	border-radius: 0 0 0px 10px;
+}
+
+#table tbody tr:last-child td:last-child {
+	border-radius: 0px 0px 10px 0px;
+}
 
 #card {
-	//visibility: hidden;
 	background-color: white;
 	margin: 0 auto;
 	margin-top: 50px;
@@ -120,17 +135,17 @@
 }
 
 #details div {
-	flex-basis: 50%;
 	text-align: center;
 }
 
-@media (min-width: 425px) {
+@media (min-width: 70em) {
   #card div {
     justify-content: center;
   }
 }
 
 #cardTitle {
+	text-align: center;
 	margin: 1em auto 1em auto;
 	font-weight: bold;
 }
@@ -153,37 +168,9 @@
 	margin: 1em 0;
 }
 
-#modal {
-	position: absolute;
-	margin-left: auto;
-	margin-right: auto;
-	top: 15%;
-	left: 0;
-	right: 0;
-	background-color: white;
-}
-
-#modal h2 {
-	margin: 0.5em 0 0 0.5em;
-}
-
-#modal h3 {
-	font-size: 1.2em;
-	margin: 1em 0 0.5em 0;
-	text-align: center;
-}
-
-#card p {
-}
-
-#card a {
-	//display: block;
-}
-
 .open {
-	background-color: green;
-	border-radius: 15px;
 	width: 80px;
+	color: green;
 	text-align: center;
 	padding: 2px 0px;
 	height: 2em;
@@ -191,8 +178,7 @@
 }
 
 .closed {
-	background-color: red;
-	border-radius: 15px;
+	color: red;
 	width: 80px;
 	text-align: center;
 	padding: 2px 0px;
@@ -240,6 +226,16 @@
 	position: relative;
 }
 
+@media (max-width: 700px) {
+  #card .photo {
+	width: 95%;
+  }
+
+  #card #photos span {
+
+  }
+}
+
 #card div.photo img {
 	width: 100%;
 	max-height: 400px;
@@ -257,29 +253,16 @@
     min-height: 350px;
 }
 
-
-div.middle {
-	margin: 15px 0;
-	display: inline-block;
-}
-
-#left {
-	width: 45%;
-}
-
-#right {
-	float: right;
-	width: 50%;
-	padding-right: 10%;
-}
 #form select {
-	width: 100%;
 	height: 33.5px;
 }
 
 #form input, #form select {
 	margin-top: 7px;
 	padding: 5px 7px;
+	border-radius: 7px;
+	font-size: 1.5em;
+	height: 2.3em;
 }
 
 #header h1 {
@@ -301,9 +284,6 @@ div.middle {
 	padding: 14px 2em 30px 2em;
 }
 
-#body input {
-	width: 100%;
-}
 
 #body #distance {
 	width: 100%;
@@ -321,48 +301,21 @@ div.middle {
 }
 
 .button {
-	//background-color: rgba(75, 101, 161, 0.85); /* Green */
 	border: none;
-	//color: white;
 	padding: 8px 16px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
 	font-size: 16px;
-	//margin-right: 1em;
-	//font-weight: lighter;
-	//border-bottom: 5px solid rgba(75, 101, 161, 1);
-}
-
-.yellow {
-	//background-color: rgba(255, 165, 0, 0.85);
-	//border-bottom: 5px solid rgba(255, 165, 0, 1);
 }
 
 .button:hover {
 	filter: brightness(0.93);
 }
 
-
-
 #form label {
 	display: inline-block;
 	position: relative;
-}
-
-.tooltip {
-	white-space: nowrap;
-	visibility: hidden;
-	color: black;
-	padding: 9px 9px 9px 15px;
-	position: relative;
-	filter: drop-shadow(2px 2px 2px #979797);
-	background: #fff;
-	border-radius: 3px;
-	border: 1px #979797 solid;
-	z-index: 2;
-	top: 15px;
-	left: 32%;
 }
 
 #form span {
@@ -405,8 +358,208 @@ div.middle {
 	margin-right: 4px;
 }
 
-
-
 #results {
 	display: hidden;
+}
+
+/* Reservation form */
+#modal input:invalid {
+	border: 1px solid #f00;
+}
+
+#modal #date {
+	width: 100%;
+	flex-wrap: nowrap;
+}
+
+#modal #date input {
+	border: 1px solid black;
+	border-radius: 4px 4px 4px 4px;
+	//border-right: none;
+}
+
+#modal #date input.error, #date span.error {
+	border: 1px solid #f00;
+}
+
+#modal #date input.error {
+	border-radius: 4px 0 0 4px;
+}
+
+ #date span.error {
+	border-left: 0;
+ }
+
+#date span {
+	border: 1px solid black;
+	border-left: none;
+	border-radius: 0 4px 4px 0;
+}
+
+#modal #date svg {
+	margin-top: -6px;
+	position: relative;
+	right: 0.5em;
+}
+
+#modal #time select {
+	padding: 0.1em 2em 0.1em 0.6em;
+	border-radius: 4px 4px 4px 4px;
+}
+
+#modal #time select.error {
+	border: 1px solid #f00;
+}
+
+#modal #time span {
+	border: none;
+}
+
+#modal #time div.error svg {
+	color: red;
+}
+
+#modal #time select.error {
+	width: 5em;
+}
+
+#modal #time span.error {
+	position: relative;
+	right: 2.5em;
+	pointer-events: none;
+}
+
+#modal #time span#hourError {
+	margin-left: -1.5em;
+}
+
+#modal #time select, #time label  {
+	border: 1px solid black;
+}
+
+#modal #time #hours svg.clock {
+	position: relative;
+	right: 3em;
+	color: black;
+	margin-top: 0.6em;
+}
+
+#modal #time #hours svg.clock#clockError {
+	right: 4.5em;
+}
+
+select.minutes {
+	width: 5em;
+	position: relative;
+	right: 1.25em;
+}
+
+select.minutes.error {
+
+}
+
+#modal #time span.minutes.error {
+	right: 3.75em;
+}
+
+#modal #time div {
+}
+
+#modal #time div.error {
+	margin: 0 0 0 0;
+}
+
+#modal {
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	top: 15%;
+	left: 0;
+	right: 0;
+	background-color: white;
+	border-radius: 6px;
+}
+
+#modal h2 {
+	margin: 0.5em 0 0 0.5em;
+}
+
+#modal h3 {
+	font-size: 1.2em;
+	margin: 1em 0 0.5em 0;
+	text-align: center;
+}
+
+#modal form {
+	padding: 0 1em;
+}
+
+#modal input {
+	display: block;
+	width: 100%;
+	border-radius: 4px;
+	border: none;
+	border: solid 1px;
+	padding: 0.1em 0.75em 0.2em 0.6em;
+}
+
+#modal #time select {
+	/* for Firefox */
+	-moz-appearance: none;
+	/* for Chrome */
+	-webkit-appearance: none;
+	border-radius: 4px;
+	display: inline-block;
+	//width: 6em;
+}
+
+#modal #time svg {
+	margin-left: 0.5em;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+
+#modal #time span {
+	margin-right: 0.4em;
+	//margin-left: 0.6em;
+	position: relative;
+	right: 1.25em;
+}
+
+#modal #time div.error span, div.error select.minutes {
+	right: 2.5em;
+}
+
+#modal #time span.error {
+	border-left: none;
+	//right: 3.5em;
+}
+
+#modal #time {
+	display: block;
+}
+
+/* For IE10 */
+#modal #time select::-ms-expand {
+  display: none;
+}
+
+#modal button {
+	margin: 1em auto;
+	display: block;
+}
+
+#modal #footer {
+	border-top: 1px solid #eaeaea;
+}
+#modal #footer button {
+	float: right;
+	margin: 1em 1em 1em 0;
+}
+
+/* End reservation form */
+span.error {
+	color: red;
+	display: block;
 }

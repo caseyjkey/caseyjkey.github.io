@@ -1,0 +1,14 @@
+env: standard
+runtime: nodejs14
+instance_class: F4
+inbound_services:
+- warmup
+automatic_scaling:
+    min_idle_instances: 1
+    min_instances: 1
+handlers:
+  - url: /.*
+    secure: always
+    script: auto
+env_variables:
+  NEXT_PUBLIC_GOOGLE_API_KEY: AIzaSyAJbN4SHchsN1orl43lWy5fGb0AXMks-Qs

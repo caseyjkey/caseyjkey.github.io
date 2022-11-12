@@ -5,7 +5,6 @@ import styles from '../styles/Map.module.css';
 export default function Maps({ lat, lng }) {
   const googlemap = useRef(null);
   useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_GOOGLE_API_KEY)
     const loader = new Loader({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY
     });

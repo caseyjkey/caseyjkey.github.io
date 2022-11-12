@@ -2,90 +2,38 @@
 // Bootstrap htmlFor everything else
 import React from 'react'
 import { useEffect } from 'react'
-import Geocode from "react-geocode"
 import Navbar from '../components/Navbar'
 import YelpSearch from '../components/YelpSearch'
 import BusinessCard from '../components/BusinessCard'
 import styles from '../styles/Search.module.css'
+import {Loader} from '@googlemaps/js-api-loader';
 
-Geocode.setApiKey("AIzaSyAJbN4SHchsN1orl43lWy5fGb0AXMks-Qs");
 const IP_INFO_TOKEN = "7c62390b3fc18d";
 
-
-
 export default function Search() {
-    let ENV, SEARCH_API_URI, DETAILS_API_URI;
+    const [API_URI, setAPI] = React.useState('https://api-dot-next-yelp-shops.wl.r.appspot.com');
     useEffect(() => {
-        ENV = window.location.hostname === ("127.0.0.1" || 'localhost') ? 'dev' : 'prod';
-        SEARCH_API_URI = ENV === 'dev' ? 'http://127.0.0.1:8081' : 'https://us-central1-local-shop-finder-363403.cloudfunctions.net/search';
-        DETAILS_API_URI =  ENV === 'dev' ? 'http://127.0.0.1:8080' : 'https://us-central1-local-shop-finder-363403.cloudfunctions.net/details';
+        let ENV = 'prod'; //["127.0.0.1", "localhost"].some((url) => window.location.hostname.includes(url)) ? 'dev' : 'prod';
+        setAPI(ENV === 'dev' ? 'http://localhost:8081' : 'https://api-dot-next-yelp-shops.wl.r.appspot.com');
     })
 
     const [card, setCard] = React.useState(null);
+    const [shops, setShops] = React.useState(null);
+    const table = React.useRef(null);
+    const radiusInput = React.useRef(null);
+    const [term, setTerm] = React.useState('');
+    const [radius, setRadius] = React.useState(10);
+    const [location, setLocation] = React.useState('');
+    const [checked, setChecked] = React.useState(false); 
+    const [select, setSelect] = React.useState("all");
+    const [searched, setSearched] = React.useState(false);
 
     const showResults = async () => {
         let shops = await getShops();
-        console.log(shops)
-        if (!shops) return; 
-
-        let table = document.querySelector('table'),
-            th = document.querySelector('thead'),
-            tb = document.querySelector('tbody'),
-            tr, td, cell = null,
-            noRecords = document.getElementById(styles.noRecords) || document.createElement('div');
-
-
-        if (shops.length === 0) {
-            table.innerHTML = ''
-            let results = document.getElementById(styles.results);
-            noRecords.innerText = 'No results available';
-            noRecords.setAttribute('id', styles.noRecords);
-            results.insertBefore(noRecords, results.firstChild);
-            results.scrollIntoView();
-            return;
-        } else {
-            noRecords.style.display = 'none';
-            table.style.display = 'table';
-        }
-
-        if (!th) {    
-            let th = table.createTHead(),
-                tr = th.insertRow(),
-                headers = ['No.', 'Image', 'Business Name', 'Rating', 'Distance (miles)'];
-        
-            for (let header of headers) {
-                td = tr.insertCell();
-                cell = document.createTextNode(header);
-                td.addEventListener('click', sortTable);
-                td.appendChild(cell);
-            }
-        }
-
-        if (tb) tb.remove();
-        tb = table.createTBody();
-        for (let idx in shops) {
-            const { id, image_url, name, rating, distance } = shops[idx];
-            const tr = tb.insertRow();
-            tr.addEventListener('click', () => setCard(id));
-            let td = tr.insertCell();
-            td.appendChild(document.createTextNode(`${parseInt(idx) + 1}`));
-            td = tr.insertCell();
-            const img = document.createElement('img');
-            img.src = image_url;
-            td.appendChild(img);
-            td = tr.insertCell();
-            td.appendChild(document.createTextNode(`${name}`));
-            td = tr.insertCell();
-            td.appendChild(document.createTextNode(`${rating}`));
-            td = tr.insertCell();
-            let miles = (parseFloat(distance) / 1609).toFixed(0);
-            td.appendChild(document.createTextNode(`${miles}`));
-        }
-
-        table.scrollIntoView();
-
-        return;
+        if (!!!shops) return false;
+        setShops(await getShops());
     }
+
     let sorted = false;
     const sortTable = (event) => {
         let sortBy = event.target.innerText;
@@ -127,56 +75,42 @@ export default function Search() {
             }
         }
         sorted = !sorted;
-    }
-
-
-    
+    } 
 
     const getShops = async () => {
+        setRadius(parseFloat(radiusInput.current.value));
         if (missingInputs()) return null;
+        setCard(null);
 
         const args = await getArgs();
-        console.log(SEARCH_API_URI + '/search?' + new URLSearchParams(args));
-        const response = await fetch(SEARCH_API_URI + '/search?' + new URLSearchParams(args), {mode: 'cors'});
+        const response = await fetch(API_URI + '/search?' + new URLSearchParams(args), {mode: 'cors'});
         const shops = (await response.json()).businesses;
         return shops;
     }
 
     const missingInputs = () => {
-        let requiredInputs = ["term", "radius", "location"],
-            autodetect = document.querySelector('input[type="checkbox"]').checked;
+        let requiredInputs = [term, radius, !checked ? location : true];
+        
+        if (requiredInputs.some((input) => !!!input))
+            return true;
 
-        let missingInput, hasValue = false,
-            tooltips = null;
-        for (const [i, input] of requiredInputs.entries()) {
-            tooltips = document.querySelectorAll(`span.${styles.tooltip}`);
-            hasValue = !!(document.getElementById(input).value);
-            if (!autodetect && !hasValue && !missingInput) {
-                missingInput = true;
-                tooltips[i].style.visibility = "visible";
-            } else {
-                tooltips[i].style.visibility = "hidden";
-            }
-        }
-
-        return missingInput;
+        return false;
     }
 
     const getArgs = async () => {
         let form = document.querySelector('form');
 
-        form = getData(form);
+        let data = getData(form) as any;
 
-        let milesAsMeters = form.radius * 1609.34;
+        let milesAsMeters = radius * 1609.34;
         milesAsMeters = milesAsMeters > 40000 ? 40000 : milesAsMeters;
-        form.radius = parseInt(milesAsMeters);
+        data.radius = Math.trunc(milesAsMeters);
 
-        let latlng = await getLatLng(form.location);
-        if (latlng) delete form.location
+        let latlng = await getLatLng(location);
+        delete data.location;
+        data = {...data, ...latlng};
 
-        form = latlng ? { ...form, ...latlng} : form;
-
-        return form
+        return data
     }
 
     function getData(form) {
@@ -184,25 +118,35 @@ export default function Search() {
         return Object.fromEntries(formData)
     }
 
-    const getLatLng = async () => {
-        let autodetect = document.querySelector('input[type="checkbox"]').checked;
-        let location, response, latlng = null;
+    const getLatLng = async (location) => {
+        let autodetect = checked;
+        let coords, response, latlng = null;
         if (!autodetect) {
-            location = document.getElementById('location').value;
             try {
-                response = await Geocode.fromLatLng(location[0], location[1]);
-                console.log(location, response)
+                const loader = new Loader({
+                    apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY
+                });
+                let latlng = loader.load().then(async () => {
+                    const google = window.google;
+                    if(google.maps) {
+                        const geocoder = new google.maps.Geocoder();    
+                        response = await geocoder.geocode({address: location});
+                        latlng = response.results[0].geometry.location;
+                        latlng = [latlng.lat(), latlng.lng()];
+                        latlng = {'latitude': latlng[0], 'longitude': latlng[1]};
+                        return latlng;
+                    }
+                });
+                return await latlng;
             } catch (e) {
                 console.error(e);
+                return location
             }
-            latlng = response.results[0].geometry.location;
-            latlng = [latlng.lat(), latlng.lng()];
         } else {
-            location = await getLocation();
-            latlng = location.split(',').map(parseFloat);
+            coords = (await getLocation()).split(',').map(parseFloat);
+            latlng = {'latitude': coords[0], 'longitude': coords[1]};
+            return latlng;
         }
-        latlng = {'latitude': latlng[0], 'longitude': latlng[1]};
-        return latlng;
     }
 
     const getLocation = async () => {
@@ -210,7 +154,6 @@ export default function Search() {
         try {
             let response = await fetch(`https://ipinfo.io/json?token=${IP_INFO_TOKEN}`);
             location = (await response.json()).loc;
-            console.log(location, response)
         } catch (e) {
             console.error(e);
         }
@@ -219,104 +162,108 @@ export default function Search() {
 
 
     function clearFields() {
-        document.getElementById('term').value = '';
-        document.getElementById('radius').value = 10;
-        document.getElementById('select').selectedIndex = 0;
-        let location = document.getElementById('location');
-        location.value = '';
-        autodetect.checked = false;
-        location.removeAttribute('disabled');
-        document.querySelector('table').innerHTML = '';
-        let card = document.getElementById('card');
-        card.innerHTML = '';
-        card.style.visibility = 'hidden';
+        setTerm('');
+        setRadius(10);
+        setSelect("all");
+        setLocation('');
+        setChecked(true);
+        setCard(false);
+        setSearched(false);
+        setShops(null);
     }
 
     function checkCheckbox() {
-        console.log(`span.${styles.tooltip}:last-child`)
-        let location = document.getElementById('location'),
-            autodetect = document.getElementById('auto-detect');
-        if (autodetect.checked) {
-            location.value = "";
-            location.setAttribute('disabled', 'disabled');
-            document.querySelector(`span.${styles.tooltip}:last-child`).style.visibility = "hidden";
-        } else {
-            location.removeAttribute('disabled');
-        }
+        setLocation('');
+        setChecked(!checked);
     };
 
     return (
         <div className="ps-3 pe-3 pb-5">
             <Navbar page="search" />
             <div className="ms-auto me-auto d-flex flex-column col-sm-8 col-md-6 align-items-center ms-3 me-3 mt-5" id={styles.form}>
-                <div className="mt-4" id={styles.header}>
+                <div className="my-4" id={styles.header}>
                     <h1>Business search</h1>
                 </div>
                 <div className='' id={styles.body}>
-                    <form>
-                        <label htmlFor="term"  className="">
-                            Keyword<span>*</span>
-                        </label>
-                        < br />
-                        <YelpSearch />
-                        <span className={`${styles.tooltip} ${styles.top}`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"  className={`bi ${styles.biExclamationSquare}`} viewBox="0 0 16 16">
-                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
-                            </svg>
-                            Please fill out this field.
-                        </span>
-                        < br />
-                        <div className={styles.middle} id={styles.left}>
-                            <label htmlFor="radius"  className="">
-                                Distance
+                    <form onSubmit={e => e.preventDefault()}>
+                        <div className="row">
+                            <label htmlFor="term"  className="">
+                                Keyword<span>*</span>
                             </label>
                             < br />
-                            <input defaultValue="10" type="text" id="radius" name="radius" />
+                            <YelpSearch term={term} setTerm={setTerm} />
                         </div>
-                        <div className={styles.middle} id={styles.right}>
-                            <label htmlFor="category">Category<span>*</span></label>< br />
-                            <select name="categories" id={styles.select}>
-                                <option defaultValue="all">Default</option>
-                                <option defaultValue="arts">Arts & Entertainment</option>
-                                <option defaultValue="health">Health & Medical</option>
-                                <option defaultValue="hotelstravel">Hotels & Travel</option>
-                                <option defaultValue="food">Food</option>
-                                <option defaultValue="professional">Professional Services</option>
-                            </select>
+                        <div className={"row pt-4"}>
+                            <div className="col-12 col-sm-12 col-md-6 pb-4">
+                                <label htmlFor="radius"  className="p-0">
+                                    Distance
+                                </label>
+                                <br />
+                                <input required={!checked} className="w-100" type="text" id="radius" name="radius" ref={radiusInput} defaultValue="10" />
+                            </div>
+                            <div className="col-12 col-sm-12 col-md-5 pb-4">
+                                <label htmlFor="category" className="">Category<span>*</span></label>
+                                <br />
+                                <select className="w-100" name="categories" id={styles.select} value={select} onChange={(evt) => setSelect(evt.target.value)}>
+                                    <option value="all">Default</option>
+                                    <option value="arts">Arts & Entertainment</option>
+                                    <option value="health">Health & Medical</option>
+                                    <option value="hotelstravel">Hotels & Travel</option>
+                                    <option value="food">Food</option>
+                                    <option value="professional">Professional Services</option>
+                                </select>
+                            </div>
                         </div>
-                        < br />
-                        <label htmlFor="location"  className="">Location<span>*</span>
-                        </label>
-                        <span className={`${styles.tooltip} ${styles.top}`} id={styles.distanceTooltip}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"  className={`bi ${styles.biExclamationSquare}`} viewBox="0 0 16 16">
-                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
-                            </svg>
-                            Please fill out this field.
-                        </span>
-                        < br />
-                        <input type="text" name="location" id='location' />
-                        <span className={`${styles.tooltip} ${styles.top}`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"  className={`bi ${styles.biExclamationSquare}`} viewBox="0 0 16 16">
-                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
-                            </svg>
-                            Please fill out this field.
-                        </span>
-                    </form>
+                        <div className="row">
+                            <div className="col">
+                                <label htmlFor="location"  className="">Location<span>*</span>
+                                </label>
+                                < br />
+                                <input required={!checked} className="w-100" type="text" name="location" id='location' value={location} disabled={checked} onChange={(evt) => setLocation(evt.target.value)} />
+                            </div>
+                        </div>
                     <label id={styles.autoDetect} htmlFor="auto-detect">
-                        <input onChange={checkCheckbox} id="auto-detect" type="checkbox" /><span>Auto-detect my location</span>
+                        <input onChange={checkCheckbox} checked={checked} id="auto-detect" type="checkbox" /><span>Auto-detect my location</span>
                     </label>
                     <div className='container d-flex align-items-center justify-content-center'>
-                        <button onClick={showResults} id={styles.submit} className={`btn btn-danger ${styles.button} me-4`}>Submit</button>
-                        <button onClick={clearFields} id="clear"  className={`btn btn-primary ${styles.button}`}>Clear</button>
+                        <button type="submit" onClick={showResults} id={styles.submit} className={`btn btn-danger ${styles.button} me-4`}>Submit</button>
+                        <button type="button" onClick={clearFields} id="clear"  className={`btn btn-primary ${styles.button}`}>Clear</button>
                     </div>
+                    </form>
                 </div>
 
             </div>
-            <div id={styles.results}>
-                <table id={styles.table}>
-                </table>
+            <div id={styles.results} >
+                {card 
+                    ? <BusinessCard id={card} setCard={setCard} />
+                    : shops?.length 
+                    ? (
+                        <table ref={table} id={styles.table}>
+                            <thead>
+                                <tr>
+                                    {['No.', 'Image', 'Business Name', 'Rating', 'Distance (miles)'].map((header, idx) => (
+                                        <td key={idx} onClick={sortTable}>{header}</td>                        
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {[...shops].splice(0,10).map((shop, idx) => {
+                                    const { id, image_url, name, rating, distance } = shop;
+                                    const miles = (parseFloat(distance) / 1609).toFixed(0);
+                                    return (
+                                        <tr key={idx} onClick={() => setCard(id)}>
+                                            <td>{idx + 1}</td>
+                                            <td><img src={image_url}></img></td>
+                                            <td>{name}</td>
+                                            <td>{rating}</td>
+                                            <td>{miles}</td>
+                                    </tr>
+                                )})}
+                            </tbody>
+                        </table>
+                    ) : searched && <div id={styles.noRecords}>No results available</div>        
+                }
             </div>
-            <BusinessCard id={card} />
         </div>
     )
 }

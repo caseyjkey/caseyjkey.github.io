@@ -1,0 +1,6 @@
+runtime: nodejs16
+
+service: api
+
+env_variables:
+    YELP: nBmeRJk3LJyzbKlVHA2WA0tjcF_wvERiRSVvNiPzoKhUFgwKk3_RWdOqGvR7Llf0wgDoxPP4MzOW0H1gNn6aKMJjJzCLkC5MgYg7JBWFNXkbxjEIfwzvQMcpTDIxY3Yx

@@ -7,10 +7,10 @@ export default function Navbar({ page }) {
                 <div className="navbar-collapse collapse">
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item">
-                            <a className={`nav-link btn btn-outline ${page === 'search' ? 'active' : ''}`} aria-current="page" href={page === 'search' ? '#' : '/search'}>Search</a>
+                            <a className={`nav-link btn ${page === 'search' ? 'active btn-outline' : ''}`} aria-current="page" href={page === 'search' ? '#' : '/search'}>Search</a>
                         </li>
                         <li className="nav-item">
-                            <a className={`nav-link ${page === 'bookings' ? 'active' : ''}`} href={page === 'bookings' ? '#' : '/bookings'}>Bookings</a>
+                            <a className={`nav-link btn ${page === 'bookings' ? 'active btn-outline' : ''}`} href={page === 'bookings' ? '#' : '/bookings'}>My Bookings</a>
                         </li>
                     </ul>
                 </div>
