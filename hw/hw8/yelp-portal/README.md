@@ -2,6 +2,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+*NOTE: To use local backend API, change occurences of `let ENV = 'prod'` to `let ENV = 'dev'` or uncomment the dynamic assignment.*
+
 First, run the development server:
 
 ```bash

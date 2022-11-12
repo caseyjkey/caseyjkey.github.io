@@ -6,13 +6,6 @@ import Navbar from '../components/Navbar'
 import styles from '../styles/Bookings.module.css'
 
 export default function Bookings() {
-    let ENV, SEARCH_API_URI, DETAILS_API_URI;
-    useEffect(() => {
-        ENV = 'prod'; //window.location.hostname === ("127.0.0.1" || 'localhost') ? 'dev' : 'prod';
-        SEARCH_API_URI = ENV === 'dev' ? 'http://localhost:8081' : 'https://api-dot-next-yelp-shops.wl.r.appspot.com/search';
-        DETAILS_API_URI =  ENV === 'dev' ? 'http://localhost:8081' : 'https://api-dot-next-yelp-shops.wl.r.appspot.com/details';
-    })
-
     const [reservations, setReservations] = React.useState([]);
 
     React.useEffect(() => {
@@ -31,7 +24,7 @@ export default function Bookings() {
         <div className="ps-3 pe-3 pb-5">
             <Navbar page="bookings" />                
             {!reservations.length &&
-                <div id={styles.noBookings} className="col-sm-1 col-lg-3">
+                <div id={styles.noBookings} className="col-lg-3">
                     No reservations to show
                 </div>
             }
