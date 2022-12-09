@@ -4,6 +4,8 @@ const DETAILS_API_URI =  ENV === 'dev' ? 'http://127.0.0.1:8080' : 'https://us-c
 const IP_INFO_TOKEN = "7c62390b3fc18d";
 
 const showResults = async () => {
+    hideCard();
+
     let shops = await getShops();
     if (!shops) return; 
 
@@ -13,13 +15,7 @@ const showResults = async () => {
         tr, td, cell = null;
 
     if (shops.length === 0) {
-        table.innerHTML = ''
-        tr = table.insertRow();
-        td = tr.insertCell();
-        td.appendChild(document.createTextNode('No record has been found'));
-        td.style.height = '1em';
-        table.style.marginTop = '50px';
-        table.scrollIntoView();
+        showErrorTable('No record has been found');
         return;
     }
 
@@ -61,6 +57,22 @@ const showResults = async () => {
 
     return;
 }
+
+const showErrorTable = (message) => {
+    let table = document.querySelector('table'),
+        tr, td = null;
+
+    table.innerHTML = ''
+    tr = table.insertRow();
+    td = tr.insertCell();
+    td.appendChild(document.createTextNode(message));
+    td.style.height = '1em';
+    table.style.marginTop = '50px';
+    table.scrollIntoView();
+
+    return;
+}
+
 let sorted = false;
 const sortTable = (event) => {
     let sortBy = event.target.innerText;
@@ -191,10 +203,11 @@ const openCard = async (id) => {
 }
 
 const getShops = async () => {
-    if (missingInputs()) return null;
+    if (missingInputs()) return false;
 
     const args = await getArgs();
-    console.log(SEARCH_API_URI + '/search?' + new URLSearchParams(args));
+    if (!args) return false;
+
     const response = await fetch(SEARCH_API_URI + '/search?' + new URLSearchParams(args), {mode: 'cors'});
     const shops = (await response.json()).businesses;
     return shops;
@@ -203,9 +216,9 @@ const getShops = async () => {
 const missingInputs = () => {
     let requiredInputs = ["term", "radius", "location"],
         autodetect = document.querySelector('input[type="checkbox"]').checked;
-    if (autodetect) {
-        requiredInputs = [];
-    }
+    
+    if (autodetect)
+        requiredInputs = ["term", "radius"];
 
     let missingInput, hasValue = false,
         tooltips = null;
@@ -233,7 +246,8 @@ const getArgs = async () => {
     form.radius = parseInt(milesAsMeters);
 
     let latlng = await getLatLng(form.location);
-    if (latlng) delete form.location
+    if (latlng) delete form.location;
+    else return false;
 
     form = latlng ? { ...form, ...latlng} : form;
 
@@ -255,11 +269,14 @@ const getLatLng = async () => {
             response = await geocoder.geocode({ address: location });
         } catch (e) {
             console.error(e);
+            showErrorTable(e);
+            return false;
         }
         latlng = response.results[0].geometry.location;
         latlng = [latlng.lat(), latlng.lng()];
     } else {
         location = await getLocation();
+        if (!location) return false;
         latlng = location.split(',').map(parseFloat);
     }
     latlng = {'latitude': latlng[0], 'longitude': latlng[1]};
@@ -272,6 +289,8 @@ const getLocation = async () => {
         response = await fetch(`https://ipinfo.io/json?token=${IP_INFO_TOKEN}`);
     } catch (e) {
         console.error(e);
+        showErrorTable(e);
+        return false;
     }
     let location = await response.json();
     return location.loc;
@@ -297,6 +316,10 @@ function clearFields() {
     autodetect.checked = false;
     location.removeAttribute('disabled');
     document.querySelector('table').innerHTML = '';
+    hideCard();
+}
+
+function hideCard() {
     let card = document.getElementById('card');
     card.innerHTML = '';
     card.style.visibility = 'hidden';
