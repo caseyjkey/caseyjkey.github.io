@@ -3,3 +3,4 @@ hw/hw6/backend/service_account.json
 venv/
 */venv/
 */.env.local
+*/node_modules
